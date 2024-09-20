@@ -1,66 +1,101 @@
-// Ejercicio evaluatorio 3er bimestre
-/*
-  Integrantes
-    Nombre: Benyamin
-    Apellido: Sagranichne
-    Curso: 3A
-
-    Nombre: Matias
-    Apellido: Ojman
-    Curso: 3A
-
-  Congisgnas
-  Conexionado:
-    En la protoboard, conectar 4 LEDs para que cada uno pueda ser controlado individualmente. Cada LED deberá tener su respectiva resistencia.
-    Se debe conectar tambien, un pulsador que permita recibir información de un usuario.
-    Indicar a continuación los pines a los cuales se conectó cada elemento y el valor de resistencias utilizado:
-      Pines:
-        Boton: 2
-        LED2:4
-        LED3:5
-        LED4:6
-      Valor:
-        R_boton: 47k
-        R_LEDs: 330
-*/
-
-//Definimos todas nuestras variables y asignamos valores de cada pin
 #define azul 3
-#define boton 2
-#define amarillo 5
-#define rojo 4
 #define verde 6
-boolean bandera = false;
-int prendido = 6;
+#define rojo 4
+#define amarillo 5
+#define boton 2
+
+boolean azul_bool = true;
+boolean rojo_bool = false;
+boolean amarillo_bool = false;
+boolean verde_bool = false;
+boolean press = false;
+
 
 void setup() {
-  Serial.begin(9600);
-  //Asignamos si va a ser input o output cada elemento
-  pinMode(boton, INPUT);
-  pinMode(rojo, OUTPUT);
-  pinMode(amarillo, OUTPUT);
-  pinMode(verde, OUTPUT);
   pinMode(azul, OUTPUT);
+  pinMode(verde, OUTPUT);
+  pinMode(rojo, OUTPUT);
 
+    pinMode(amarillo, OUTPUT);
+pinMode(boton, INPUT);
+
+  Serial.begin(9600);
 }
 
 void loop() {
-  //En el caso de que el boton sea apretado vamos a prender todos los leds
-  if (digitalRead(boton) == HIGH && bandera == false) {
-    bandera = true;
-    digitalWrite(prendido, LOW);
-    if (prendido == 3) {
-      digitalWrite(6, HIGH);
-      prendido = 6;
-    } else {
-      Serial.print(prendido);
-      digitalWrite(prendido - 1, HIGH);
-      prendido = prendido - 1;
+  
+  // Leer datos del puerto serial solo si hay datos disponibles
+  
 
-    }
+  // Condiciones para el color VERDE
+  if (digitalRead(boton) == 1 && verde_bool && !press) {
+    press = true;
+    Serial.println("azul");
+    azul_bool = true;
+    rojo_bool = false;
+
+        amarillo_bool = false;
+verde_bool = false;
+
+    digitalWrite(azul, HIGH);
+    digitalWrite(rojo, LOW);
+    digitalWrite(verde, LOW);
+    digitalWrite(amarillo, LOW);
+    
+    // Reiniciar data para evitar múltiples ejecuciones con el mismo valor
   }
-  // else, o sea y si no vamos a apagar todos
-  else {
-    bandera = false;
+  // Condiciones para el color AZUL
+ else if (digitalRead(boton) == 1 && azul_bool && !press) {
+    press = true;
+    Serial.println("azul");
+    azul_bool = false;
+    rojo_bool = true;
+
+        amarillo_bool = false;
+verde_bool = false;
+
+    digitalWrite(azul, LOW);
+    digitalWrite(rojo, HIGH);
+    digitalWrite(verde, LOW);
+    digitalWrite(amarillo, LOW);
+    
+    // Reiniciar data para evitar múltiples ejecuciones con el mismo valor
+  }
+else   if (digitalRead(boton) == 1 && rojo_bool && !press) {
+    press = true;
+    Serial.println("azul");
+    azul_bool = false;
+    rojo_bool = false;
+
+        amarillo_bool = true;
+verde_bool = false;
+
+    digitalWrite(azul, LOW);
+    digitalWrite(rojo, LOW);
+    digitalWrite(verde, LOW);
+    digitalWrite(amarillo, HIGH);
+    
+    // Reiniciar data para evitar múltiples ejecuciones con el mismo valor
+  }
+   else if (digitalRead(boton) == 1 && amarillo_bool && !press) {
+    press = true;
+    azul_bool = false;
+    rojo_bool = false;
+
+        amarillo_bool = false;
+verde_bool = true;
+
+    digitalWrite(azul, LOW);
+    digitalWrite(rojo, LOW);
+    digitalWrite(verde, HIGH);
+    digitalWrite(amarillo, LOW);
+    
+    // Reiniciar data para evitar múltiples ejecuciones con el mismo valor
+  }
+
+
+  // Reiniciar el estado del botón
+  if (digitalRead(boton) == 0) {
+    press = false;
   }
 }
